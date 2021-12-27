@@ -13,6 +13,43 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
+app.put("/lists/:name", (req, res) => {
+  const userListName = req.params.name;
+
+  const { name, members } = req.body;
+  if (name == userListName) {
+    const listArray = Array.from(lists);
+    const nameFound = listArray.filter(
+      (listName) => listName[0].toLowerCase() === userListName
+    );
+
+    if (nameFound.length > 0) {
+      nameFound[0][1] = members || nameFound[0][1];
+      return res.status(200).json({
+        success: true,
+        updatedName: nameFound,
+      });
+    } else if (nameFound.length === 0 && (name || members)) {
+      const newList = new Map();
+      newList.set(userListName, members);
+      const merged = new Map([...lists, ...newList]);
+      return res.status(201).json({
+        success: true,
+        newList: Array.from(merged),
+      });
+    }
+  }
+
+  return res.status(404).json({
+    success: false,
+    msg: "something went wrong...",
+    hints: {
+      1: "format: /lists/:name",
+      2: "name provided in url must match the one used in the request body",
+    },
+  });
+});
+
 app.delete("/lists/:name", (req, res) => {
   const { name } = req.params;
 
