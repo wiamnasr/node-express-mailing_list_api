@@ -20,6 +20,6 @@
   "homepage": "https://github.com/wiamnasr/node-express-mailing_list_api#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.2"
+    "express": "^4.18.2"
   }
 }
